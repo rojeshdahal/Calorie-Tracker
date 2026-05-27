@@ -1,0 +1,29 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<h2 class="text-3xl font-bold mb-6">
+    Meal List
+</h2>
+
+<div class="grid gap-4">
+
+    {% for meal in meals %}
+
+        <div class="bg-white p-4 rounded-lg shadow">
+
+            <h3 class="text-xl font-semibold">
+                {{ meal.name }}
+            </h3>
+
+            <p class="text-gray-600">
+                Calories: {{ meal.calories }}
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
