@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from meals.models import Meal
+
 
 def home(request):
 
@@ -14,20 +16,7 @@ def home(request):
 
 def meals_list(request):
 
-    meals = [
-        {
-            'name': 'Rice',
-            'calories': 300,
-        },
-        {
-            'name': 'Dal',
-            'calories': 150,
-        },
-        {
-            'name': 'Milk',
-            'calories': 120,
-        },
-    ]
+    meals = Meal.objects.all()
 
     context = {
         'meals': meals
