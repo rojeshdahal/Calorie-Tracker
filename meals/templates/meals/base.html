@@ -28,12 +28,30 @@
             Meals
         </a>
     </li>
+
+    <li>
+        <a href="/meals/add/" class="hover:text-gray-200">
+            Add Meal
+        </a>
+    </li>
     </ul>
         </div>
     </nav>
 
     <main class="container mx-auto p-6">
+        {% if messages %}
 
+            {% for message in messages %}
+
+                <div
+                    class="bg-green-100 text-green-800 p-3 rounded mb-4"
+                >
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+            {% endif %}
         {% block content %}
         {% endblock %}
 
