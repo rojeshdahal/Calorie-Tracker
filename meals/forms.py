@@ -1,15 +1,21 @@
 from django import forms
-from .models import Meal
+from .models import FoodEntry
 
 
-class MealForm(forms.ModelForm):
+class FoodEntryForm(forms.ModelForm):
 
     class Meta:
-        model = Meal
-        fields = ["name", "calories", "description"]
+        model = FoodEntry
+
+        fields = [
+            "food_name",
+            "calories",
+            "meal_type",
+            "date",
+        ]
 
         widgets = {
-            "name": forms.TextInput(
+            "food_name": forms.TextInput(
                 attrs={
                     "class": "w-full border p-2 rounded"
                 }
@@ -19,19 +25,15 @@ class MealForm(forms.ModelForm):
                     "class": "w-full border p-2 rounded"
                 }
             ),
-            "description": forms.Textarea(
+            "meal_type": forms.Select(
                 attrs={
                     "class": "w-full border p-2 rounded"
                 }
             ),
+            "date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": "w-full border p-2 rounded"
+                }
+            ),
         }
-    def clean_calories(self):
-
-        calories = self.cleaned_data["calories"]
-
-        if calories <= 0:
-            raise forms.ValidationError(
-                "Calories must be greater than 0"
-            )
-
-        return calories

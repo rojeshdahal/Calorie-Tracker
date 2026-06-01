@@ -1,15 +1,29 @@
 from django.db import models
 
 
-class Meal(models.Model):
+class FoodEntry(models.Model):
 
-    name = models.CharField(max_length=100)
+    MEAL_CHOICES = [
+        ("Breakfast", "Breakfast"),
+        ("Lunch", "Lunch"),
+        ("Dinner", "Dinner"),
+        ("Snack", "Snack"),
+    ]
+
+    food_name = models.CharField(max_length=100)
 
     calories = models.PositiveIntegerField()
 
-    description = models.TextField(blank=True)
+    meal_type = models.CharField(
+        max_length=20,
+        choices=MEAL_CHOICES
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    date = models.DateField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
     def __str__(self):
-        return self.name
+        return self.food_name

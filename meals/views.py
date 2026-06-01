@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .forms import MealForm
-from meals.models import Meal
+from .models import FoodEntry
+from .forms import FoodEntryForm
 from django.contrib import messages
-
+from django.db.models import Sum
 
 def home(request):
 
@@ -17,19 +17,24 @@ def home(request):
 
 def meals_list(request):
 
-    meals = Meal.objects.all()
+    meals = FoodEntry.objects.all().order_by(
+        "-date"
+    )
 
-    context = {
-        'meals': meals
-    }
-
-    return render(request, 'meals/meals_list.html', context)
-
+    return render(
+        request,
+        "meals/meals_list.html",
+        {
+            "meals": meals
+        }
+    )
 def add_meal(request):
 
     if request.method == "POST":
 
-        form = MealForm(request.POST)
+        form = FoodEntryForm(
+            request.POST
+        )
 
         if form.is_valid():
 
@@ -37,17 +42,38 @@ def add_meal(request):
 
             messages.success(
                 request,
-                "Meal added successfully."
+                "Food logged successfully."
             )
 
-            return redirect("meals_list")
+            return redirect(
+                "meals_list"
+            )
 
     else:
 
-        form = MealForm()
+        form = FoodEntryForm()
 
-    context = {
-        "form": form
-    }
+    return render(
+        request,
+        "meals/add_meal.html",
+        {
+            "form": form
+        }
+    )
 
-    return render(request, "meals/add_meal.html", context)
+def dashboard(request):
+
+    total_calories = (
+        FoodEntry.objects.aggregate(
+            Sum("calories")
+        )["calories__sum"]
+        or 0
+    )
+
+    return render(
+        request,
+        "meals/dashboard.html",
+        {
+            "total_calories": total_calories
+        }
+    )

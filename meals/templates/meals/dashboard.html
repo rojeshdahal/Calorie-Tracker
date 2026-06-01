@@ -1,0 +1,21 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<div class="bg-white p-8 rounded-xl shadow">
+
+    <h1 class="text-3xl font-bold mb-4">
+        Dashboard
+    </h1>
+
+    <h2 class="text-2xl">
+        Total Calories Logged
+    </h2>
+
+    <p class="text-5xl font-bold text-green-600">
+        {{ total_calories }}
+    </p>
+
+</div>
+
+{% endblock %}
