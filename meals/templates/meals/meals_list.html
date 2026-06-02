@@ -12,9 +12,9 @@
 
         <div class="bg-white p-5 rounded-xl shadow">
 
-    <h3 class="text-xl font-bold">
+    <a href="{% url 'meal_detail' meal.id %}" class="text-xl font-bold text-green-600">
         {{ meal.food_name }}
-    </h3>
+    </a>
 
     <p>
         Calories: {{ meal.calories }}

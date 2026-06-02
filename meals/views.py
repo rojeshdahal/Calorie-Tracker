@@ -3,7 +3,7 @@ from .models import FoodEntry
 from .forms import FoodEntryForm
 from django.contrib import messages
 from django.db.models import Sum
-
+from django.shortcuts import get_object_or_404
 def home(request):
 
     context = {
@@ -75,5 +75,19 @@ def dashboard(request):
         "meals/dashboard.html",
         {
             "total_calories": total_calories
+        }
+    )
+
+def meal_detail(request, id):
+    meal = get_object_or_404(
+        FoodEntry,
+        id = id
+    )
+
+    return render(
+        request,
+        "meals/meal_detail.html",
+        {
+            "meal":meal
         }
     )

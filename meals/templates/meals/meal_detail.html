@@ -1,0 +1,25 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<div class="bg-white p-8 rounded-xl shadow">
+
+    <h1 class="text-3xl font-bold mb-4">
+        {{ meal.food_name }}
+    </h1>
+
+    <p class="mb-2">
+        Calories: {{ meal.calories }}
+    </p>
+
+    <p class="mb-2">
+        Meal Type: {{ meal.meal_type }}
+    </p>
+
+    <p class="mb-2">
+        Date: {{ meal.date }}
+    </p>
+
+</div>
+
+{% endblock %}
