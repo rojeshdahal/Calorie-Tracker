@@ -4,6 +4,7 @@ from .forms import FoodEntryForm
 from django.contrib import messages
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+
 def home(request):
 
     context = {
@@ -91,3 +92,37 @@ def meal_detail(request, id):
             "meal":meal
         }
     )
+
+def edit_meal(request, id):
+    meal = get_object_or_404(
+        FoodEntry,
+        id = id
+    )
+    if request.method == "POST":
+        form = FoodEntryForm(
+            request.POST,
+            instance=meal
+        )
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                "Information updated successfully."
+            )
+            return redirect(
+                "meal_detail",
+                id = meal.id
+            )
+    else:
+        form = FoodEntryForm(
+            instance = meal
+        )        
+
+    return render(request,
+                  "meals/edit_meal.html",
+                  {
+                  "form":form,
+                  "meal":meal
+                  }
+    )    

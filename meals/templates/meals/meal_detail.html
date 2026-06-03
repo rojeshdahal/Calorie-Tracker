@@ -19,6 +19,12 @@
     <p class="mb-2">
         Date: {{ meal.date }}
     </p>
+    <a
+    href="{% url 'edit_meal' meal.id %}"
+    class="bg-blue-600 text-white px-4 py-2 rounded inline-block mt-4"
+>
+    Edit
+</a>
 
 </div>
 
