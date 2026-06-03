@@ -126,3 +126,27 @@ def edit_meal(request, id):
                   "meal":meal
                   }
     )    
+
+def delete_meal(request, id):
+    meal = get_object_or_404(
+        FoodEntry,
+        id=id
+    )
+    if request.method == "POST":
+        meal.delete()
+
+        messages.success(
+            request,
+            "Item Deleted Successfully."
+        )
+
+        return redirect(
+            "meals_list"
+        )
+    return render(request,
+                    "meals/delete_meal.html",
+                    {
+                        "meal":meal
+                    }
+
+                    )
