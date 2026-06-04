@@ -4,6 +4,7 @@ from .forms import FoodEntryForm
 from django.contrib import messages
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 def home(request):
 
@@ -15,10 +16,12 @@ def home(request):
 
     return render(request, 'meals/home.html', context)
 
-
+@login_required
 def meals_list(request):
 
-    meals = FoodEntry.objects.all().order_by(
+    meals = FoodEntry.objects.filter(
+    user=request.user
+    ).order_by(
         "-date"
     )
 
@@ -29,6 +32,8 @@ def meals_list(request):
             "meals": meals
         }
     )
+
+@login_required
 def add_meal(request):
 
     if request.method == "POST":
@@ -39,7 +44,11 @@ def add_meal(request):
 
         if form.is_valid():
 
-            form.save()
+            entry = form.save(commit=False)
+
+            entry.user = request.user
+
+            entry.save()
 
             messages.success(
                 request,
@@ -62,10 +71,13 @@ def add_meal(request):
         }
     )
 
+@login_required
 def dashboard(request):
 
     total_calories = (
-        FoodEntry.objects.aggregate(
+        FoodEntry.objects.filter(
+            user=request.user
+        ).aggregate(
             Sum("calories")
         )["calories__sum"]
         or 0
@@ -79,6 +91,7 @@ def dashboard(request):
         }
     )
 
+@login_required
 def meal_detail(request, id):
     meal = get_object_or_404(
         FoodEntry,
@@ -93,6 +106,7 @@ def meal_detail(request, id):
         }
     )
 
+@login_required
 def edit_meal(request, id):
     meal = get_object_or_404(
         FoodEntry,
@@ -104,7 +118,11 @@ def edit_meal(request, id):
             instance=meal
         )
         if form.is_valid():
-            form.save()
+            entry = form.save(commit=False)
+
+            entry.user = request.user
+
+            entry.save()
 
             messages.success(
                 request,
@@ -127,6 +145,7 @@ def edit_meal(request, id):
                   }
     )    
 
+@login_required
 def delete_meal(request, id):
     meal = get_object_or_404(
         FoodEntry,
