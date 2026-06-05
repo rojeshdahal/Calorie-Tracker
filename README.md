@@ -34,8 +34,8 @@ The application uses a One-to-Many relationship between the built-in Django User
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/calorie-tracker-django.git
-cd calorie-tracker-django
+git clone https://github.com/rojeshdahal/Calorie-Tracker.git
+cd Calorie-Tracker
 ```
 
 Create and activate a virtual environment:
