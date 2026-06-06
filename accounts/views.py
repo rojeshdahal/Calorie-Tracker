@@ -12,7 +12,11 @@ def register(request):
 
         if form.is_valid():
 
-            form.save()
+            entry = form.save(commit=False)
+
+            entry.user = request.user
+
+            entry.save()
 
             return redirect("login")
 

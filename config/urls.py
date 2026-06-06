@@ -27,4 +27,5 @@ urlpatterns = [
         "",
         include("meals.urls")
     ),
+    path("admin/", admin.site.urls),
 ]

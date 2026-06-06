@@ -11,30 +11,41 @@
 <body class="bg-gray-100">
 
     <nav class="bg-green-600 text-white p-4">
-        <div class="container mx-auto flex justify-between">
+        <div class="container mx-auto flex justify-between items-center space-x-4">
             <h1 class="text-2xl font-bold">
                 Calorie Tracker
             </h1>
 
-    <ul class="flex gap-4">
-    <li>
-        <a href="/" class="hover:text-gray-200">
-            Home
-        </a>
-    </li>
+    {% if user.is_authenticated %}
 
-    <li>
-        <a href="/meals/" class="hover:text-gray-200">
-            Meals
-        </a>
-    </li>
+    <a href="{% url 'dashboard' %}">
+        Dashboard
+    </a>
 
-    <li>
-        <a href="/meals/add/" class="hover:text-gray-200">
-            Add Meal
-        </a>
-    </li>
-    </ul>
+    <a href="{% url 'meals_list' %}">
+        Meals
+    </a>
+
+    <a href="{% url 'add_meal' %}">
+        Add Meal
+    </a>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button>Logout</button>
+    </form>
+
+{% else %}
+
+    <a href="{% url 'login' %}">
+        Login
+    </a>
+
+    <a href="{% url 'register' %}">
+        Register
+    </a>
+
+{% endif %}
         </div>
     </nav>
 
