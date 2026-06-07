@@ -6,6 +6,20 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
+# for class view
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
+from django.urls import reverse_lazy
+
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin
+)
+
 def home(request):
 
     context = {
@@ -16,22 +30,40 @@ def home(request):
 
     return render(request, 'meals/home.html', context)
 
-@login_required
-def meals_list(request):
+# @login_required
+# def meals_list(request):
 
-    meals = FoodEntry.objects.filter(
-    user=request.user
-    ).order_by(
-        "-date"
-    )
+#     meals = FoodEntry.objects.filter(
+#     user=request.user
+#     ).order_by(
+#         "-date"
+#     )
 
-    return render(
-        request,
-        "meals/meals_list.html",
-        {
-            "meals": meals
-        }
-    )
+#     return render(
+#         request,
+#         "meals/meals_list.html",
+#         {
+#             "meals": meals
+#         }
+#     )
+
+# for class based view
+class MealListView(
+    LoginRequiredMixin,
+    ListView
+):
+
+    model = FoodEntry
+
+    template_name = "meals/meals_list.html"
+
+    context_object_name = "meals"
+
+    def get_queryset(self):
+
+        return FoodEntry.objects.filter(
+            user=self.request.user
+        ).order_by("-date")
 
 @login_required
 def add_meal(request):
