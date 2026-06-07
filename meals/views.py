@@ -65,43 +65,61 @@ class MealListView(
             user=self.request.user
         ).order_by("-date")
 
-@login_required
-def add_meal(request):
+# @login_required
+# def add_meal(request):
 
-    if request.method == "POST":
+#     if request.method == "POST":
 
-        form = FoodEntryForm(
-            request.POST
-        )
+#         form = FoodEntryForm(
+#             request.POST
+#         )
 
-        if form.is_valid():
+#         if form.is_valid():
 
-            entry = form.save(commit=False)
+#             entry = form.save(commit=False)
 
-            entry.user = request.user
+#             entry.user = request.user
 
-            entry.save()
+#             entry.save()
 
-            messages.success(
-                request,
-                "Food logged successfully."
-            )
+#             messages.success(
+#                 request,
+#                 "Food logged successfully."
+#             )
 
-            return redirect(
-                "meals_list"
-            )
+#             return redirect(
+#                 "meals_list"
+#             )
 
-    else:
+#     else:
 
-        form = FoodEntryForm()
+#         form = FoodEntryForm()
 
-    return render(
-        request,
-        "meals/add_meal.html",
-        {
-            "form": form
-        }
-    )
+#     return render(
+#         request,
+#         "meals/add_meal.html",
+#         {
+#             "form": form
+#         }
+#     )
+
+# for class based view
+class MealCreateView(
+    LoginRequiredMixin,
+    CreateView
+):
+    model = FoodEntry
+
+    form_class = FoodEntryForm
+
+    template_name = ("meals/add_meal.html")
+
+    success_url = reverse_lazy("meals_list")
+
+    def form_valid(self, form):
+        form.instance.user = (self.request.user)
+        return super().form_valid(form)
+    
 
 @login_required
 def dashboard(request):
