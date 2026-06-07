@@ -141,81 +141,138 @@ def dashboard(request):
         }
     )
 
-@login_required
-def meal_detail(request, id):
-    meal = get_object_or_404(
-        FoodEntry,
-        id = id
-    )
+# @login_required
+# def meal_detail(request, id):
+#     meal = get_object_or_404(
+#         FoodEntry,
+#         id = id
+#     )
 
-    return render(
-        request,
-        "meals/meal_detail.html",
-        {
-            "meal":meal
-        }
-    )
+#     return render(
+#         request,
+#         "meals/meal_detail.html",
+#         {
+#             "meal":meal
+#         }
+#     )
 
-@login_required
-def edit_meal(request, id):
-    meal = get_object_or_404(
-        FoodEntry,
-        id = id
-    )
-    if request.method == "POST":
-        form = FoodEntryForm(
-            request.POST,
-            instance=meal
-        )
-        if form.is_valid():
-            entry = form.save(commit=False)
+class MealDetailView(LoginRequiredMixin, DetailView):
+    model = FoodEntry
 
-            entry.user = request.user
+    template_name = ("meals/meal_delete.html")
 
-            entry.save()
+    context_object_name = "meal"
 
-            messages.success(
-                request,
-                "Information updated successfully."
-            )
-            return redirect(
-                "meal_detail",
-                id = meal.id
-            )
-    else:
-        form = FoodEntryForm(
-            instance = meal
-        )        
-
-    return render(request,
-                  "meals/edit_meal.html",
-                  {
-                  "form":form,
-                  "meal":meal
-                  }
-    )    
-
-@login_required
-def delete_meal(request, id):
-    meal = get_object_or_404(
-        FoodEntry,
-        id=id
-    )
-    if request.method == "POST":
-        meal.delete()
-
-        messages.success(
-            request,
-            "Item Deleted Successfully."
+    def get_queryset(self):
+        return FoodEntry.object.filter(
+            user=self.request.user
         )
 
-        return redirect(
-            "meals_list"
-        )
-    return render(request,
-                    "meals/delete_meal.html",
-                    {
-                        "meal":meal
-                    }
 
-                    )
+# @login_required
+# def edit_meal(request, id):
+#     meal = get_object_or_404(
+#         FoodEntry,
+#         id = id
+#     )
+#     if request.method == "POST":
+#         form = FoodEntryForm(
+#             request.POST,
+#             instance=meal
+#         )
+#         if form.is_valid():
+#             entry = form.save(commit=False)
+
+#             entry.user = request.user
+
+#             entry.save()
+
+#             messages.success(
+#                 request,
+#                 "Information updated successfully."
+#             )
+#             return redirect(
+#                 "meal_detail",
+#                 id = meal.id
+#             )
+#     else:
+#         form = FoodEntryForm(
+#             instance = meal
+#         )        
+
+#     return render(request,
+#                   "meals/edit_meal.html",
+#                   {
+#                   "form":form,
+#                   "meal":meal
+#                   }
+#     )   
+
+# class based view
+class MealUpdateView(
+    LoginRequiredMixin,
+    UpdateView
+): 
+    model = FoodEntry
+
+    form_class = FoodEntryForm
+
+    template_name = ("meals/edit_meal.html")
+
+    def get_queryset(self):
+
+        return FoodEntry.objects.filter(
+            user=self.request.user
+        )
+
+    def get_success_url(self):
+
+        return reverse_lazy(
+            "meal_detail",
+            kwargs={
+                "id": self.object.id
+            }
+        )
+
+# @login_required
+# def delete_meal(request, id):
+#     meal = get_object_or_404(
+#         FoodEntry,
+#         id=id
+#     )
+#     if request.method == "POST":
+#         meal.delete()
+
+#         messages.success(
+#             request,
+#             "Item Deleted Successfully."
+#         )
+
+#         return redirect(
+#             "meals_list"
+#         )
+#     return render(request,
+#                     "meals/delete_meal.html",
+#                     {
+#                         "meal":meal
+#                     }
+
+#                     )
+
+# class based view
+
+class MealDeleteView(
+    LoginRequiredMixin,
+    DeleteView
+):
+    model = FoodEntry
+
+    template_name = ("meals/delete_meal.html")
+
+    success_url = reverse_lazy("meals_list")
+
+    def get_queryset(self):
+
+        return FoodEntry.objects.filter(
+            user=self.request.user
+        )
