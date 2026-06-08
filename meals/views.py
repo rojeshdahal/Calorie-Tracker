@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from datetime import date
+from django.db.models import Avg
+from django.db.models import Max
 
 # for class view
 from django.views.generic import (
@@ -148,6 +150,8 @@ class MealCreateView(
 @login_required
 def dashboard(request):
 
+    goal = 2200
+
     total_calories = (
         FoodEntry.objects.filter(
             user=request.user
@@ -156,13 +160,37 @@ def dashboard(request):
         )["calories__sum"]
         or 0
     )
+    remaining = goal - total_calories
+
+    average = (
+    FoodEntry.objects.filter(
+        user=request.user
+    ).aggregate(
+        Avg("calories")
+    )["calories__avg"]
+    or 0
+    )
+    
+    highest = (
+    FoodEntry.objects.filter(
+        user=request.user
+    ).order_by("-calories")
+    .first()
+    )
 
     return render(
         request,
         "meals/dashboard.html",
         {
-            "total_calories": total_calories
-        }
+            "goal": goal,
+            "total_calories": total_calories,
+            "remaining": remaining,
+            "average": round(
+                average,
+                2
+            ),
+            "highest": highest,
+            }           
     )
 
 # @login_required
