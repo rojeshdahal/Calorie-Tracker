@@ -1,23 +1,18 @@
 {% extends 'meals/base.html' %}
 
 {% block content %}
-<form method="GET" class="mb-6">
 
-    <input
-        type="text"
-        name="search"
-        placeholder="Search food..."
-        value="{{ request.GET.search }}"
-        class="border p-2 rounded"
-    >
-
-    <button
-        class="bg-green-600 text-white px-4 py-2 rounded"
-    >
-        Search
-    </button>
-
+<form method="GET" class="mb-6 flex gap-2">
+    <input type="text" name="search" placeholder="Search food..." value="{{ request.GET.search }}" class="border p-2 rounded">
+    
+    <select name="filter" class="border p-2 rounded">
+        <option value="">All Time</option>
+        <option value="today" {% if request.GET.filter == 'today' %}selected{% endif %}>Today</option>
+    </select>
+    
+    <button class="bg-green-600 text-white px-4 py-2 rounded">Filter</button>
 </form>
+
 <h2 class="text-3xl font-bold mb-6">
     Meal List
 </h2>

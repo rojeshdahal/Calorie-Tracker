@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from datetime import date
 
 # for class view
 from django.views.generic import (
@@ -68,6 +70,16 @@ class MealListView(
         search = self.request.GET.get(
             "search"
         )
+
+        filter_type = self.request.GET.get(
+            "filter"
+                )
+        
+        if filter_type == "today":
+
+            queryset = queryset.filter(
+                date=date.today()
+            )
 
         if search:
 
