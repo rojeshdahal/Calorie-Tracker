@@ -61,10 +61,22 @@ class MealListView(
 
     def get_queryset(self):
 
-        return FoodEntry.objects.filter(
+        queryset = FoodEntry.objects.filter(
             user=self.request.user
-        ).order_by("-date")
+        )
 
+        search = self.request.GET.get(
+            "search"
+        )
+
+        if search:
+
+            queryset = queryset.filter(
+                food_name__icontains=search
+            )
+
+        return queryset.order_by("-date")
+    
 # @login_required
 # def add_meal(request):
 
