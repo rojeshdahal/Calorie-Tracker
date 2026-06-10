@@ -27,6 +27,16 @@
     <canvas id="dailyChart"></canvas>
 </div>
 
+<div class="bg-white p-6 rounded shadow mt-6">
+
+    <h2 class="text-xl font-bold mb-4">
+        Calories By Meal Type
+    </h2>
+
+    <canvas id="mealChart"></canvas>
+
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const dailyLabels = JSON.parse('{{ daily_labels|escapejs }}');
@@ -58,6 +68,45 @@
             }
         }
     );
+</script>
+
+<script>
+
+const mealLabels =
+    JSON.parse(
+        '{{ meal_labels|escapejs }}'
+    );
+
+const mealTotals =
+    JSON.parse(
+        '{{ meal_totals|escapejs }}'
+    );
+
+new Chart(
+    document.getElementById(
+        "mealChart"
+    ),
+    {
+        type: "bar",
+
+        data: {
+
+            labels:
+                mealLabels,
+
+            datasets: [
+                {
+                    label:
+                        "Calories",
+
+                    data:
+                        mealTotals
+                }
+            ]
+        }
+    }
+);
+
 </script>
 
 {% endblock %}
