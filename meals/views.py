@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect
 from .models import FoodEntry
 from .forms import FoodEntryForm
 from django.contrib import messages
-from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from datetime import date
 from django.db.models import Avg
 from django.db.models import Max
+from django.db.models import Sum
+from django.db.models.functions import TruncDate
+import json
 
 # for class view
 from django.views.generic import (
@@ -149,7 +151,6 @@ class MealCreateView(
 
 @login_required
 def dashboard(request):
-
     goal = 2200
 
     total_calories = (
@@ -177,22 +178,42 @@ def dashboard(request):
     ).order_by("-calories")
     .first()
     )
-
-    return render(
-        request,
-        "meals/dashboard.html",
-        {
-            "goal": goal,
-            "total_calories": total_calories,
-            "remaining": remaining,
-            "average": round(
-                average,
-                2
-            ),
-            "highest": highest,
-            }           
+    # 1. Your daily calories aggregation
+    daily_data = (
+        FoodEntry.objects.filter(user=request.user)
+        .values("date")
+        .annotate(total=Sum("calories"))
+        .order_by("date")
     )
 
+    daily_labels = [item["date"].strftime("%Y-%m-%d") for item in daily_data]
+    daily_totals = [item["total"] for item in daily_data]
+
+    # 2. Your meal type aggregation
+    meal_type_data = (FoodEntry.objects.filter(user=request.user)
+                      .values("meal_type")
+                      .annotate(total=Sum("calories")))
+    
+    meal_labels = [item["meal_type"] for item in meal_type_data]
+    meal_totals = [item["total"] for item in meal_type_data]
+
+    # 3. Add the snippet right here inside the context dictionary
+    context = {
+        "goal": goal,
+        "total_calories": total_calories,
+        "remaining": remaining,
+        "average": round(average, 2),
+        "highest": highest,
+        
+        # --- YOUR SNIPPET GOES HERE ---
+        "daily_labels": json.dumps(daily_labels),
+        "daily_totals": json.dumps(daily_totals),
+        "meal_labels": json.dumps(meal_labels),
+        "meal_totals": json.dumps(meal_totals),
+    }
+
+    # 4. Pass the context to the template
+    return render(request, "meals/dashboard.html", context)
 # @login_required
 # def meal_detail(request, id):
 #     meal = get_object_or_404(
