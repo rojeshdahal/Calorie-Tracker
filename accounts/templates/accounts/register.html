@@ -1,28 +1,49 @@
 {% extends 'meals/base.html' %}
 
 {% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md border border-slate-100 my-10">
 
-<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-800">Create an Account</h1>
+        <p class="text-sm text-slate-500 mt-2">Join us to start managing your meals</p>
+    </div>
 
-    <h1 class="text-3xl font-bold mb-6">
-        Register
-    </h1>
-
-    <form method="POST">
-
+    <form method="POST" class="space-y-5">
         {% csrf_token %}
 
-        {{ form.as_p }}
+        {% if form.errors %}
+            <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg text-sm">
+                Please fix the errors below.
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="flex flex-col space-y-1">
+                <label for="{{ field.id_for_label }}" class="text-sm font-semibold text-slate-700">
+                    {{ field.label }}
+                </label>
+                
+                <!-- standard Django input rendering -->
+                <div class="django-input-wrapper [&_input]:w-full [&_input]:px-4 [&_input]:py-2.5 [&_input]:rounded-lg [&_input]:border [&_input]:border-slate-300 [&_input]:outline-none [&_input]:focus:border-green-600">
+                    {{ field }}
+                </div>
+
+                {% if field.help_text %}
+                    <p class="text-xs text-slate-400 mt-1">{{ field.help_text|safe }}</p>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="text-xs font-medium text-red-600 mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
 
         <button
             type="submit"
-            class="bg-green-600 text-white px-4 py-2 rounded"
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-150 mt-2"
         >
             Register
         </button>
-
     </form>
-
 </div>
-
 {% endblock %}
