@@ -3,70 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <title>Calorie Tracker</title>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <nav class="bg-green-600 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center space-x-4">
-            <h1 class="text-2xl font-bold">
-                Calorie Tracker
+    <nav class="bg-green-600 text-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <h1 class="text-2xl font-extrabold tracking-tight">
+                <a href="{% url 'dashboard' %}" class="hover:text-green-100 transition duration-150">
+                    🥑 Calorie Tracker
+                </a>
             </h1>
 
-    {% if user.is_authenticated %}
+            <div class="flex items-center space-x-6 font-medium">
+                {% if user.is_authenticated %}
+                    
+                    <a href="{% url 'dashboard' %}" class="hover:text-green-100 transition duration-150 py-1 border-b-2 border-transparent hover:border-white">
+                        Dashboard
+                    </a>
 
-    <a href="{% url 'dashboard' %}">
-        Dashboard
-    </a>
+                    <a href="{% url 'meals_list' %}" class="hover:text-green-100 transition duration-150 py-1 border-b-2 border-transparent hover:border-white">
+                        Meals
+                    </a>
 
-    <a href="{% url 'meals_list' %}">
-        Meals
-    </a>
+                    <a href="{% url 'add_meal' %}" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-sm shadow-sm transition duration-150">
+                        + Add Meal
+                    </a>
 
-    <a href="{% url 'add_meal' %}">
-        Add Meal
-    </a>
+                    <form method="post" action="{% url 'logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-sm font-semibold text-green-100 hover:text-white border border-green-400/40 hover:border-white px-3 py-1.5 rounded-lg transition duration-150">
+                            Logout
+                        </button>
+                    </form>
 
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button>Logout</button>
-    </form>
+                {% else %}
 
-{% else %}
+                    <a href="{% url 'login' %}" class="hover:text-green-100 transition duration-150">
+                        Login
+                    </a>
 
-    <a href="{% url 'login' %}">
-        Login
-    </a>
+                    <a href="{% url 'register' %}" class="bg-white text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition duration-150">
+                        Register
+                    </a>
 
-    <a href="{% url 'register' %}">
-        Register
-    </a>
-
-{% endif %}
+                {% endif %}
+            </div>
         </div>
     </nav>
 
-    <main class="container mx-auto p-6">
+    <main class="container mx-auto px-6 py-8 flex-grow max-w-6xl">
+        
         {% if messages %}
+            <div class="space-y-3 max-w-md mx-auto mb-6">
+                {% for message in messages %}
+                    <div class="p-4 rounded-xl shadow-sm border text-sm flex items-start space-x-2 
+                        {% if message.tags == 'error' %}
+                            bg-red-50 border-red-200 text-red-800
+                        {% elif message.tags == 'warning' %}
+                            bg-amber-50 border-amber-200 text-amber-800
+                        {% else %}
+                            bg-green-50 border-green-200 text-green-800
+                        {% endif %}">
+                        
+                        <span>
+                            {% if message.tags == 'error' %}⚠️ 
+                            {% elif message.tags == 'warning' %}⚡ 
+                            {% else %}✅ {% endif %}
+                        </span>
+                        <div class="flex-1">{{ message }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-            {% for message in messages %}
-
-                <div
-                    class="bg-green-100 text-green-800 p-3 rounded mb-4"
-                >
-                    {{ message }}
-                </div>
-
-            {% endfor %}
-
-            {% endif %}
         {% block content %}
         {% endblock %}
 
     </main>
+
+    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-100 bg-white mt-auto">
+        &copy; 2026 Calorie Tracker. All rights reserved.
+    </footer>
 
 </body>
 </html>

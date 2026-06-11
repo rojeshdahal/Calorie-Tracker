@@ -2,26 +2,43 @@
 
 {% block content %}
 
-<div class="bg-white p-8 rounded-xl shadow max-w-xl mx-auto">
+<div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
 
-    <h1 class="text-3xl font-bold mb-6">
-        Edit Entry
-    </h1>
+    <h2 class="text-3xl font-bold mb-6">
+        Edit Meal
+    </h2>
 
-    <form method="POST">
+       <form method="POST">
 
-        {% csrf_token %}
+    {% csrf_token %}
 
-        {{ form.as_p }}
+    <div class="mb-4">
+        <label>Name</label>
+        {{ form.food_name }}
+    </div>
 
-        <button
-            type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-            Update
-        </button>
+    <div class="mb-4">
+        <label>Calories</label>
+        {{ form.calories }}
+    </div>
 
-    </form>
+    <div class="mb-4">
+        <label>Meal Type</label>
+        {{ form.meal_type }}
+    </div>
+    <div class="mb-4">
+        <label>Date</label>
+        {{ form.date }}
+    </div>
+
+    <button
+        type="submit"
+        class="bg-green-600 text-white px-4 py-2 rounded"
+    >
+        Update
+    </button>
+
+</form>
 
 </div>
 

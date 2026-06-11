@@ -1,31 +1,40 @@
 {% extends 'meals/base.html' %}
 
 {% block content %}
+<div class="max-w-md mx-auto bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden my-12 animate-fade-in">
+    
+    <div class="bg-red-50 border-b border-red-100 p-6 flex items-center space-x-4">
+        <div class="bg-red-100 text-red-600 p-3 rounded-xl text-xl shrink-0">
+            ⚠️
+        </div>
+        <div>
+            <h1 class="text-xl font-bold text-slate-900">Delete Log Entry</h1>
+            <p class="text-xs text-slate-500 mt-0.5">This action cannot be undone</p>
+        </div>
+    </div>
 
-<div class="bg-white p-8 rounded-xl shadow max-w-lg mx-auto">
+    <div class="p-6">
+        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+            Are you sure you want to permanently remove <span class="font-bold text-slate-900 bg-slate-50 px-2 py-1 rounded border border-slate-200/60 inline-block my-1">"{{ meal.food_name }}"</span> from your calorie tracking history?
+        </p>
 
-    <h1 class="text-2xl font-bold mb-4">
-        Delete Entry
-    </h1>
+        <form method="POST" class="flex flex-col sm:flex-row-reverse gap-3">
+            {% csrf_token %}
 
-    <p class="mb-6">
-        Are you sure you want to delete
-        "{{ meal.food_name }}"?
-    </p>
+            <button
+                type="submit"
+                class="w-full sm:flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-sm hover:shadow transition duration-150 ease-in-out focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >
+                Yes, Delete
+            </button>
 
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <button
-            type="submit"
-            class="bg-red-600 text-white px-4 py-2 rounded"
-        >
-            Delete
-        </button>
-
-    </form>
-
+            <a
+                href="{% url 'meals_list'%}"
+                class="w-full sm:flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-center transition duration-150 block text-sm"
+            >
+                Cancel
+            </a>
+        </form>
+    </div>
 </div>
-
 {% endblock %}

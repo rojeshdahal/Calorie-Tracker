@@ -178,7 +178,7 @@ def dashboard(request):
     ).order_by("-calories")
     .first()
     )
-    # 1. Your daily calories aggregation
+    
     daily_data = (
         FoodEntry.objects.filter(user=request.user)
         .values("date")
@@ -189,7 +189,7 @@ def dashboard(request):
     daily_labels = [item["date"].strftime("%Y-%m-%d") for item in daily_data]
     daily_totals = [item["total"] for item in daily_data]
 
-    # 2. Your meal type aggregation
+    
     meal_type_data = (FoodEntry.objects.filter(user=request.user)
                       .values("meal_type")
                       .annotate(total=Sum("calories")))
@@ -197,7 +197,6 @@ def dashboard(request):
     meal_labels = [item["meal_type"] for item in meal_type_data]
     meal_totals = [item["total"] for item in meal_type_data]
 
-    # 3. Add the snippet right here inside the context dictionary
     context = {
         "goal": goal,
         "total_calories": total_calories,
@@ -205,14 +204,12 @@ def dashboard(request):
         "average": round(average, 2),
         "highest": highest,
         
-        # --- YOUR SNIPPET GOES HERE ---
         "daily_labels": json.dumps(daily_labels),
         "daily_totals": json.dumps(daily_totals),
         "meal_labels": json.dumps(meal_labels),
         "meal_totals": json.dumps(meal_totals),
     }
 
-    # 4. Pass the context to the template
     return render(request, "meals/dashboard.html", context)
 # @login_required
 # def meal_detail(request, id):
@@ -232,12 +229,12 @@ def dashboard(request):
 class MealDetailView(LoginRequiredMixin, DetailView):
     model = FoodEntry
 
-    template_name = ("meals/meal_delete.html")
+    template_name = ("meals/meal_detail.html")
 
     context_object_name = "meal"
 
     def get_queryset(self):
-        return FoodEntry.object.filter(
+        return FoodEntry.objects.filter(
             user=self.request.user
         )
 
@@ -303,7 +300,7 @@ class MealUpdateView(
         return reverse_lazy(
             "meal_detail",
             kwargs={
-                "id": self.object.id
+                "pk": self.object.id
             }
         )
 
@@ -343,6 +340,8 @@ class MealDeleteView(
     template_name = ("meals/delete_meal.html")
 
     success_url = reverse_lazy("meals_list")
+
+    context_object_name = "meal"
 
     def get_queryset(self):
 
