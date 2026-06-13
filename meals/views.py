@@ -151,7 +151,10 @@ class MealCreateView(
 
 @login_required
 def dashboard(request):
-    goal = 2200
+    
+    goal = (
+    request.user.profile.daily_goal
+)
 
     total_calories = (
         FoodEntry.objects.filter(
